@@ -1,67 +1,33 @@
-const _0x4b4e69 = _0x339c;
-function _0x339c(_0x3f1784, _0x189913) {
-    const _0x4e8a55 = _0x29ee();
-    return _0x339c = function (_0x5e15bd, _0x91ab43) {
-        _0x5e15bd = _0x5e15bd - (0x11ac + -0x2 * -0x70d + -0x1e85);
-        let _0x37ed47 = _0x4e8a55[_0x5e15bd];
-        return _0x37ed47;
-    }, _0x339c(_0x3f1784, _0x189913);
+
+console.log('Starting . . .')
+require('dotenv').config(), require('rootpath')(), require('./server')
+const { spawn: spawn } = require('child_process'), path = require('path'), colors = require('@colors/colors/safe'), CFonts = require('cfonts')
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '1'
+process.on('uncaughtException', console.error)
+
+function start() {
+	let args = [path.join(__dirname, './connect.js'), ...process.argv.slice(2)]
+	let p = spawn(process.argv[0], args, { stdio: ['inherit', 'inherit', 'inherit', 'ipc'] })
+	.on('message', data => {
+		if (data == 'reset') {
+			console.log('Restarting...')
+			p.kill()
+			delete p
+		}
+	})
+	.on('exit', code => {
+		console.error('Exited with code:', code)
+		if (code == 1) start()
+ if (code == null) start()
+	})
 }
-(function (_0x5a313e, _0x623c9d) {
-    const _0x45cf2f = _0x339c, _0x2952d0 = _0x5a313e();
-    while (!![]) {
-        try {
-            const _0x164973 = parseInt(_0x45cf2f(0x142)) / (0x81 * 0x35 + 0xf * 0x25d + -0x3e27) + parseInt(_0x45cf2f(0x159)) / (0x1ba1 * -0x1 + 0xeaf + 0x67a * 0x2) * (-parseInt(_0x45cf2f(0x145)) / (-0x168e + 0x4 * 0x4ab + 0x3e5)) + -parseInt(_0x45cf2f(0x155)) / (-0x115c + 0x71f + 0xa41) * (-parseInt(_0x45cf2f(0x154)) / (-0x56e + 0xd3 * 0x12 + -0x59 * 0x1b)) + parseInt(_0x45cf2f(0x157)) / (0xd82 + -0x1 * -0xb11 + -0x1 * 0x188d) * (-parseInt(_0x45cf2f(0x14c)) / (0xe00 + -0x1c60 + 0xe67)) + -parseInt(_0x45cf2f(0x141)) / (0x18aa + 0x1ca4 * 0x1 + -0x11c2 * 0x3) + -parseInt(_0x45cf2f(0x149)) / (0x283 * -0xa + -0x187f + 0x31a6) + parseInt(_0x45cf2f(0x14b)) / (0x2 * 0x5d5 + 0xfdb + 0x1b7b * -0x1);
-            if (_0x164973 === _0x623c9d)
-                break;
-            else
-                _0x2952d0['push'](_0x2952d0['shift']());
-        } catch (_0x11cfce) {
-            _0x2952d0['push'](_0x2952d0['shift']());
-        }
-    }
-}(_0x29ee, 0xd788c + 0x901e8 + -0x823ac));
-const fs = require('fs'), chalk = require(_0x4b4e69(0x144));
-function _0x29ee() {
-    const _0x44f0b0 = [
-        '1450oZfFaC',
-        '1907832Maroiu',
-        '1285228HZzrdN',
-        '6289688206',
-        'chalk',
-        '393NuNyyN',
-        'cache',
-        'sessionNam',
-        'owner',
-        '13009176AycISl',
-        'log',
-        '15341010zdlPub',
-        '7RwJsrJ',
-        'yellowBrig',
-        'Update\x20Fil',
-        'resolve',
-        'unwatchFil',
-        'e\x20Terbaru\x20',
-        '739',
-        'AcFCI',
-        '70935VkvACB',
-        '64aYFnqw',
-        'Hen',
-        '1966098iMOtSC',
-        'watchFile'
-    ];
-    _0x29ee = function () {
-        return _0x44f0b0;
-    };
-    return _0x29ee();
-}
-global[_0x4b4e69(0x147) + 'e'] = _0x4b4e69(0x156), global[_0x4b4e69(0x148)] = [_0x4b4e69(0x143) + _0x4b4e69(0x152)];
-let file = require[_0x4b4e69(0x14f)](__filename);
-fs[_0x4b4e69(0x158)](file, () => {
-    const _0x5869e6 = _0x4b4e69, _0x4c4f65 = {
-            'AcFCI': function (_0x5995d5, _0x2b5109) {
-                return _0x5995d5(_0x2b5109);
-            }
-        };
-    fs[_0x5869e6(0x150) + 'e'](file), console[_0x5869e6(0x14a)](chalk[_0x5869e6(0x14d) + 'ht'](_0x5869e6(0x14e) + _0x5869e6(0x151) + __filename)), delete require[_0x5869e6(0x146)][file], _0x4c4f65[_0x5869e6(0x153)](require, file);
-});
+
+CFonts.say('WilyKun', {
+   font: 'shade',
+   gradient: ['blue','magenta'],
+   align: 'left'
+}), CFonts.say('WilyKun', {
+   font: 'console',
+   gradient: ['red','magenta'],
+   align: 'left'
+}), start()
