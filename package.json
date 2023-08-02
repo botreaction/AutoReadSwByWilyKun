@@ -1,13 +1,13 @@
 {
-  "name": "s",
+  "name": "Hen",
   "version": "1.0.0",
-  "description": "s",
+  "description": "Script By Hen",
   "main": "./connect.js",
   "type": "commonjs",
   "scripts": {
     "start": "node main.js"
   },
-  "author": "s",
+  "author": "Hen",
   "license": "ISC",
   "dependencies": {
     "@adiwajshing/keyed-db": "latest",

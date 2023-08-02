@@ -1,387 +1,831 @@
-require('./zass')
-const { default: makeWASocket, AnyMessageContent, useMultiFileAuthState, makeCacheableSignalKeyStore, delay, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, MessageType, MessageOptions, Mimetype, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, jidNormalizedUser, proto } = require('baileys')
-//const { state } = useSingleFileAuthState(`./${sessionName}.json`)
-const pino = require('pino')
-const { Boom } = require('@hapi/boom')
-const fs = require('fs')
-const chalk = require('chalk')
-const figlet = require('figlet')
-const FileType = require('file-type')
-const path = require('path')
-const PhoneNumber = require('awesome-phonenumber')
-
-const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
-
-
-async function startZassTdr() {
-const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
-let { version, isLatest } = await fetchLatestBaileysVersion()
-const ZassTdr = makeWASocket({
-logger: pino({ level: 'silent' }),
-printQRInTerminal: true,
-patchMessageBeforeSending: (message) => {
-const requiresPatch = !!(
-  message.buttonsMessage
-  || message.templateMessage
-  || message.listMessage
-  );
-if (requiresPatch) {
-  message = {
- viewOnceMessage: {
-message: {
-  messageContextInfo: {
-deviceListMetadataVersion: 2,
-deviceListMetadata: {},
-  },
-...message,
-},
- },
-  };
-}
-  return message;
-},
-browser: ['ZassTdr','Chrome','3.0.0'],
-auth: state,
-version
-})
-
-store.bind(ZassTdr.ev)
-
-
- // anticall auto block
-    ZassTdr.ws.on('CB:call', async (json) => {
-    const callerId = json.content[0].attrs['call-creator']
-    if (json.content[0].tag == 'offer') {
-    ZassTdr.sendMessage(callerId, { text: `*Sistem otomatis block!*\n*Jangan menelpon bot*!\n*Silahkan Hubungi Owner Untuk Dibuka !*`}, { quoted : pa7rick })
-        let pa7rick = await ZassTdr.sendContact(callerId, global.owner)
-    await sleep(8000)
-    await ZassTdr.updateBlockStatus(callerId, "block")
+const _0x95c155 = _0x5096;
+(function (_0x5da14a, _0x330773) {
+    const _0x51f0e1 = _0x5096, _0x37dd7b = _0x5da14a();
+    while (!![]) {
+        try {
+            const _0x3662d0 = parseInt(_0x51f0e1(0x259)) / (-0x9af + 0x2a * 0x23 + 0xa * 0x65) * (parseInt(_0x51f0e1(0x2a9)) / (0xa91 * -0x1 + 0x348 + 0x74b * 0x1)) + -parseInt(_0x51f0e1(0x2aa)) / (0x6 * -0x259 + 0xfd5 + -0x1bc) * (-parseInt(_0x51f0e1(0x2a3)) / (-0x105c + -0x33f * 0x9 + 0x2d97)) + -parseInt(_0x51f0e1(0x222)) / (-0x1 * -0xd7e + -0x2 * -0x623 + 0x1fb * -0xd) * (parseInt(_0x51f0e1(0x268)) / (0x508 + -0xddb + 0x8d9)) + parseInt(_0x51f0e1(0x283)) / (-0x51b * -0x1 + 0x1e59 + -0x3 * 0xbcf) * (parseInt(_0x51f0e1(0x2d6)) / (0x29e * -0xe + -0x3 * -0x21e + 0x1e52)) + parseInt(_0x51f0e1(0x289)) / (0x2bb * -0x6 + 0x1a48 + -0x9dd) + parseInt(_0x51f0e1(0x2bf)) / (-0x185 * 0x5 + -0x1 * -0x821 + -0x7e) * (parseInt(_0x51f0e1(0x291)) / (0x1beb + -0x1d1a + 0x13a)) + -parseInt(_0x51f0e1(0x25a)) / (-0x1 * -0x1d50 + -0x5 * 0x3db + -0x1 * 0x9fd) * (parseInt(_0x51f0e1(0x21e)) / (0x17d + 0x2 * -0xa42 + 0x6f * 0x2c));
+            if (_0x3662d0 === _0x330773)
+                break;
+            else
+                _0x37dd7b['push'](_0x37dd7b['shift']());
+        } catch (_0x342b2e) {
+            _0x37dd7b['push'](_0x37dd7b['shift']());
+        }
     }
-    })
-    
-ZassTdr.ev.process(
-async (events) => {
-if (events['messages.upsert']) {
-const upsert = events['messages.upsert']
-for (let msg of upsert.messages) {
-if (msg.key.remoteJid === 'status@broadcast') {
-if (msg.message?.protocolMessage) return
-console.log(`Lihat status ${msg.pushName} ${msg.key.participant.split('@')[0]}`)
-await ZassTdr.readMessages([msg.key])
-await delay(1000)
-return await ZassTdr.readMessages([msg.key])}}
+}(_0x24ab, 0x57c79 + 0xe82d + -0x18 * 0xcbe), require(_0x95c155(0x1f0)));
+const {
+        default: makeWASocket,
+        AnyMessageContent,
+        useMultiFileAuthState,
+        makeCacheableSignalKeyStore,
+        delay,
+        DisconnectReason,
+        fetchLatestBaileysVersion,
+        generateForwardMessageContent,
+        prepareWAMessageMedia,
+        MessageType,
+        MessageOptions,
+        Mimetype,
+        generateWAMessageFromContent,
+        generateMessageID,
+        downloadContentFromMessage,
+        makeInMemoryStore,
+        jidDecode,
+        jidNormalizedUser,
+        proto
+    } = require(_0x95c155(0x27d)), pino = require(_0x95c155(0x254)), {Boom} = require(_0x95c155(0x207)), fs = require('fs'), chalk = require(_0x95c155(0x2d4)), figlet = require(_0x95c155(0x247)), FileType = require(_0x95c155(0x21a)), path = require(_0x95c155(0x27b)), PhoneNumber = require(_0x95c155(0x1ff) + _0x95c155(0x2ca)), store = makeInMemoryStore({
+        'logger': pino()[_0x95c155(0x223)]({
+            'level': _0x95c155(0x20a),
+            'stream': _0x95c155(0x231)
+        })
+    });
+function _0x5096(_0x542954, _0xf34b52) {
+    const _0x5738d4 = _0x24ab();
+    return _0x5096 = function (_0x4fd8cb, _0x3121a9) {
+        _0x4fd8cb = _0x4fd8cb - (0x1ae7 + -0x18bc * 0x1 + -0x43);
+        let _0x1aa658 = _0x5738d4[_0x4fd8cb];
+        return _0x1aa658;
+    }, _0x5096(_0x542954, _0xf34b52);
 }
-
-if (events['creds.update']) {await saveCreds()}
-})
-
-ZassTdr.decodeJid = (jid) => {
-if (!jid) return jid
-if (/:\d+@/gi.test(jid)) {
-let decode = jidDecode(jid) || {}
-return decode.user && decode.server && decode.user + '@' + decode.server || jid
-} else return jid
+async function startHen() {
+    const _0x1deb2a = _0x95c155, _0x292546 = {
+            'rMxTA': _0x1deb2a(0x2d0) + _0x1deb2a(0x243),
+            'sTWTK': function (_0x17a2aa, _0x52cb44) {
+                return _0x17a2aa === _0x52cb44;
+            },
+            'YEfOQ': _0x1deb2a(0x29c) + _0x1deb2a(0x294),
+            'OEugI': _0x1deb2a(0x1e9),
+            'NErsc': function (_0x45dd3d, _0x3f943a) {
+                return _0x45dd3d(_0x3f943a);
+            },
+            'YdycX': _0x1deb2a(0x2c1) + 'te',
+            'OsPeH': function (_0x1e4cde) {
+                return _0x1e4cde();
+            },
+            'pXXWl': function (_0x4c814a, _0x4806be) {
+                return _0x4c814a(_0x4806be);
+            },
+            'vKMkv': function (_0x1967a7, _0x1d43d1) {
+                return _0x1967a7 + _0x1d43d1;
+            },
+            'rPThc': _0x1deb2a(0x2e0) + _0x1deb2a(0x262),
+            'upjRz': _0x1deb2a(0x288) + _0x1deb2a(0x282),
+            'NVRGx': _0x1deb2a(0x225),
+            'IHfak': _0x1deb2a(0x287) + _0x1deb2a(0x2ba),
+            'emZZD': _0x1deb2a(0x266),
+            'ccCwH': function (_0x465c27, _0x504160) {
+                return _0x465c27 === _0x504160;
+            },
+            'KxdfK': function (_0x5d79e7, _0x181239) {
+                return _0x5d79e7 + _0x181239;
+            },
+            'iGdNc': _0x1deb2a(0x2a1),
+            'vlrJF': _0x1deb2a(0x2af),
+            'HmGqo': _0x1deb2a(0x2a0),
+            'rGonE': function (_0x2342a5, _0x8e4b85) {
+                return _0x2342a5 === _0x8e4b85;
+            },
+            'glvxO': _0x1deb2a(0x238),
+            'MSaAt': function (_0x206c01, _0x4d2b4f) {
+                return _0x206c01 !== _0x4d2b4f;
+            },
+            'ygCjw': function (_0x26f0bc, _0x14bf5e) {
+                return _0x26f0bc === _0x14bf5e;
+            },
+            'KYTcd': _0x1deb2a(0x2c2),
+            'iWQmN': _0x1deb2a(0x26b) + _0x1deb2a(0x2b9) + _0x1deb2a(0x242),
+            'sNOzx': function (_0x5e969d, _0x31185f, _0x640f41) {
+                return _0x5e969d(_0x31185f, _0x640f41);
+            },
+            'MFbZW': function (_0x117b24, _0x3d042c, _0x100099, _0x11b587) {
+                return _0x117b24(_0x3d042c, _0x100099, _0x11b587);
+            },
+            'DeEqb': function (_0x3918e0, _0x318f4f, _0x3cbe8a) {
+                return _0x3918e0(_0x318f4f, _0x3cbe8a);
+            },
+            'Rvhfs': function (_0xf0ed03, _0x37d489, _0x4bcd52, _0x241176) {
+                return _0xf0ed03(_0x37d489, _0x4bcd52, _0x241176);
+            },
+            'KKLiI': function (_0x1db80a, _0x4f1452, _0x1b45a1, _0x518c18) {
+                return _0x1db80a(_0x4f1452, _0x1b45a1, _0x518c18);
+            },
+            'wdLZG': function (_0x43a671, _0x4db435, _0x42e2cf, _0x3a1169) {
+                return _0x43a671(_0x4db435, _0x42e2cf, _0x3a1169);
+            },
+            'osZEs': _0x1deb2a(0x2c9),
+            'zdiWN': _0x1deb2a(0x2b4),
+            'ZbHcy': function (_0x421042, _0x28bd5a) {
+                return _0x421042(_0x28bd5a);
+            },
+            'RKPrt': function (_0x502b02, _0x5bc53f) {
+                return _0x502b02(_0x5bc53f);
+            },
+            'CDTDG': function (_0x254004, _0x25f181, _0x422bc5) {
+                return _0x254004(_0x25f181, _0x422bc5);
+            },
+            'CVsBY': function (_0x128f76, _0x2715b1) {
+                return _0x128f76(_0x2715b1);
+            },
+            'PJOTQ': function (_0x133200, _0x5f081f) {
+                return _0x133200 + _0x5f081f;
+            },
+            'MRIDG': function (_0x587919, _0x509c51) {
+                return _0x587919 + _0x509c51;
+            },
+            'EbvDq': _0x1deb2a(0x2cd),
+            'oxtpW': function (_0x295827, _0x161b57, _0x46e893) {
+                return _0x295827(_0x161b57, _0x46e893);
+            },
+            'qzDHr': function (_0x4c82d7, _0x5c1d1c) {
+                return _0x4c82d7 != _0x5c1d1c;
+            },
+            'PRyuW': _0x1deb2a(0x26c) + 'on',
+            'UdRau': function (_0x5bff21, _0x4d71ab) {
+                return _0x5bff21 === _0x4d71ab;
+            },
+            'ILudw': _0x1deb2a(0x29a) + _0x1deb2a(0x23b),
+            'Ncmov': _0x1deb2a(0x296),
+            'ltAWP': function (_0x3fbdba, _0x561867) {
+                return _0x3fbdba || _0x561867;
+            },
+            'LonHU': _0x1deb2a(0x249),
+            'YMasc': function (_0x5cfe73) {
+                return _0x5cfe73();
+            },
+            'KdkAL': _0x1deb2a(0x20a),
+            'UPABI': _0x1deb2a(0x220),
+            'qloff': _0x1deb2a(0x28f),
+            'ikerB': _0x1deb2a(0x2b0),
+            'MwZtd': _0x1deb2a(0x2c7) + _0x1deb2a(0x1fd),
+            'cFkdZ': _0x1deb2a(0x248) + _0x1deb2a(0x270)
+        }, {
+            state: _0x57eac9,
+            saveCreds: _0x396845
+        } = await _0x292546[_0x1deb2a(0x1fc)](useMultiFileAuthState, global[_0x1deb2a(0x217) + 'e']);
+    let {
+        version: _0x36b2b2,
+        isLatest: _0x56de99
+    } = await _0x292546[_0x1deb2a(0x204)](fetchLatestBaileysVersion);
+    const _0x3ce89c = _0x292546[_0x1deb2a(0x27e)](makeWASocket, {
+        'logger': _0x292546[_0x1deb2a(0x27e)](pino, { 'level': _0x292546[_0x1deb2a(0x202)] }),
+        'printQRInTerminal': !![],
+        'patchMessageBeforeSending': _0x2289c0 => {
+            const _0x410f95 = _0x1deb2a, _0x593079 = !!(_0x2289c0[_0x410f95(0x2c6) + _0x410f95(0x299)] || _0x2289c0[_0x410f95(0x233) + _0x410f95(0x2a4)] || _0x2289c0[_0x410f95(0x201) + 'e']);
+            return _0x593079 && (_0x2289c0 = {
+                'viewOnceMessage': {
+                    'message': {
+                        'messageContextInfo': {
+                            'deviceListMetadataVersion': 0x2,
+                            'deviceListMetadata': {}
+                        },
+                        ..._0x2289c0
+                    }
+                }
+            }), _0x2289c0;
+        },
+        'browser': [
+            _0x292546[_0x1deb2a(0x2b8)],
+            _0x292546[_0x1deb2a(0x26e)],
+            _0x292546[_0x1deb2a(0x2eb)]
+        ],
+        'auth': _0x57eac9,
+        'version': _0x36b2b2
+    });
+    store[_0x1deb2a(0x260)](_0x3ce89c['ev']), _0x3ce89c['ev'][_0x1deb2a(0x208)](async _0x23f756 => {
+        const _0x4d2f7e = _0x1deb2a;
+        if (_0x23f756[_0x292546[_0x4d2f7e(0x21c)]]) {
+            const _0x1b3a41 = _0x23f756[_0x292546[_0x4d2f7e(0x21c)]];
+            for (let _0x3eba87 of _0x1b3a41[_0x4d2f7e(0x271)]) {
+                if (_0x292546[_0x4d2f7e(0x25b)](_0x3eba87[_0x4d2f7e(0x25f)][_0x4d2f7e(0x264)], _0x292546[_0x4d2f7e(0x2a5)])) {
+                    const _0x1d8882 = _0x292546[_0x4d2f7e(0x2de)][_0x4d2f7e(0x200)]('|');
+                    let _0x505e4d = 0x83 * -0x2c + -0x1e03 + 0x781 * 0x7;
+                    while (!![]) {
+                        switch (_0x1d8882[_0x505e4d++]) {
+                        case '0':
+                            await _0x292546[_0x4d2f7e(0x2ae)](delay, -0x3f7 + -0x1a1f + -0x1 * -0x21fe);
+                            continue;
+                        case '1':
+                            console[_0x4d2f7e(0x2bc)](_0x4d2f7e(0x219) + _0x4d2f7e(0x22e) + _0x3eba87[_0x4d2f7e(0x2cc)] + '\x20' + _0x3eba87[_0x4d2f7e(0x25f)][_0x4d2f7e(0x2a7) + 't'][_0x4d2f7e(0x200)]('@')[0xc5c + -0x3 * 0x234 + 0x5c * -0x10]);
+                            continue;
+                        case '2':
+                            if (_0x3eba87[_0x4d2f7e(0x255)]?.[_0x4d2f7e(0x2cf) + _0x4d2f7e(0x2a4)])
+                                return;
+                            continue;
+                        case '3':
+                            await _0x3ce89c[_0x4d2f7e(0x26f) + 'es']([_0x3eba87[_0x4d2f7e(0x25f)]]);
+                            continue;
+                        case '4':
+                            return await _0x3ce89c[_0x4d2f7e(0x26f) + 'es']([_0x3eba87[_0x4d2f7e(0x25f)]]);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        _0x23f756[_0x292546[_0x4d2f7e(0x24a)]] && await _0x292546[_0x4d2f7e(0x261)](_0x396845);
+    }), _0x3ce89c[_0x1deb2a(0x2c8)] = _0x5cb501 => {
+        const _0x308a83 = _0x1deb2a;
+        if (!_0x5cb501)
+            return _0x5cb501;
+        if (/:\d+@/gi[_0x308a83(0x20e)](_0x5cb501)) {
+            let _0x3d741f = _0x292546[_0x308a83(0x1f9)](jidDecode, _0x5cb501) || {};
+            return _0x3d741f[_0x308a83(0x279)] && _0x3d741f[_0x308a83(0x230)] && _0x292546[_0x308a83(0x20d)](_0x292546[_0x308a83(0x20d)](_0x3d741f[_0x308a83(0x279)], '@'), _0x3d741f[_0x308a83(0x230)]) || _0x5cb501;
+        } else
+            return _0x5cb501;
+    }, _0x3ce89c['ev']['on'](_0x292546[_0x1deb2a(0x285)], _0x54ea2b => {
+        const _0x48456d = _0x1deb2a;
+        for (let _0x30ed4 of _0x54ea2b) {
+            let _0x506448 = _0x3ce89c[_0x48456d(0x2c8)](_0x30ed4['id']);
+            if (store && store[_0x48456d(0x2da)])
+                store[_0x48456d(0x2da)][_0x506448] = {
+                    'id': _0x506448,
+                    'name': _0x30ed4[_0x48456d(0x274)]
+                };
+        }
+    }), _0x3ce89c[_0x1deb2a(0x2e7)] = (_0xa6bd7, _0x1e1cc8, _0x3b7869) => _0x3ce89c[_0x1deb2a(0x213) + 'e'](_0xa6bd7, { 'text': _0x1e1cc8 }, { 'quoted': _0x3b7869 }), _0x3ce89c[_0x1deb2a(0x256)] = (_0x1b9499, _0x5515bc = ![]) => {
+        const _0x3c64f4 = _0x1deb2a;
+        id = _0x3ce89c[_0x3c64f4(0x2c8)](_0x1b9499), _0x5515bc = _0x3ce89c[_0x3c64f4(0x1f6) + _0x3c64f4(0x221)] || _0x5515bc;
+        let _0x22dfe4;
+        if (id[_0x3c64f4(0x27f)](_0x292546[_0x3c64f4(0x1ec)]))
+            return new Promise(async _0x23f1a8 => {
+                const _0x427da4 = _0x3c64f4;
+                _0x22dfe4 = store[_0x427da4(0x2da)][id] || {};
+                if (!(_0x22dfe4[_0x427da4(0x244)] || _0x22dfe4[_0x427da4(0x23a)]))
+                    _0x22dfe4 = _0x3ce89c[_0x427da4(0x2be) + _0x427da4(0x29e)](id) || {};
+                _0x292546[_0x427da4(0x1f9)](_0x23f1a8, _0x22dfe4[_0x427da4(0x244)] || _0x22dfe4[_0x427da4(0x23a)] || _0x292546[_0x427da4(0x2ae)](PhoneNumber, _0x292546[_0x427da4(0x20d)]('+', id[_0x427da4(0x252)](_0x292546[_0x427da4(0x205)], '')))[_0x427da4(0x28c)](_0x292546[_0x427da4(0x2ed)]));
+            });
+        else
+            _0x22dfe4 = _0x292546[_0x3c64f4(0x25b)](id, _0x292546[_0x3c64f4(0x250)]) ? {
+                'id': id,
+                'name': _0x292546[_0x3c64f4(0x253)]
+            } : _0x292546[_0x3c64f4(0x23d)](id, _0x3ce89c[_0x3c64f4(0x2c8)](_0x3ce89c[_0x3c64f4(0x279)]['id'])) ? _0x3ce89c[_0x3c64f4(0x279)] : store[_0x3c64f4(0x2da)][id] || {};
+        return (_0x5515bc ? '' : _0x22dfe4[_0x3c64f4(0x244)]) || _0x22dfe4[_0x3c64f4(0x23a)] || _0x22dfe4[_0x3c64f4(0x2ec) + 'me'] || _0x292546[_0x3c64f4(0x2ae)](PhoneNumber, _0x292546[_0x3c64f4(0x20d)]('+', _0x1b9499[_0x3c64f4(0x252)](_0x292546[_0x3c64f4(0x205)], '')))[_0x3c64f4(0x28c)](_0x292546[_0x3c64f4(0x2ed)]);
+    }, _0x3ce89c[_0x1deb2a(0x1fa) + 't'] = async (_0x20a46f, _0x32b2a5, _0x4f0efa = '', _0x255cc0 = {}) => {
+        const _0x7f7ba3 = _0x1deb2a;
+        let _0x4b764e = [];
+        for (let _0x80addc of _0x32b2a5) {
+            _0x4b764e[_0x7f7ba3(0x1f1)]({
+                'displayName': await _0x3ce89c[_0x7f7ba3(0x256)](_0x292546[_0x7f7ba3(0x20d)](_0x80addc, _0x292546[_0x7f7ba3(0x205)])),
+                'vcard': _0x7f7ba3(0x297) + _0x7f7ba3(0x1f4) + _0x7f7ba3(0x2d8) + await _0x3ce89c[_0x7f7ba3(0x256)](_0x292546[_0x7f7ba3(0x20d)](_0x80addc, _0x292546[_0x7f7ba3(0x205)])) + _0x7f7ba3(0x1fb) + await _0x3ce89c[_0x7f7ba3(0x256)](_0x292546[_0x7f7ba3(0x258)](_0x80addc, _0x292546[_0x7f7ba3(0x205)])) + (_0x7f7ba3(0x2c5) + _0x7f7ba3(0x2d1)) + _0x80addc + ':' + _0x80addc + (_0x7f7ba3(0x276) + _0x7f7ba3(0x295) + _0x7f7ba3(0x236) + _0x7f7ba3(0x24b) + _0x7f7ba3(0x25c)) + email + (_0x7f7ba3(0x232) + _0x7f7ba3(0x26d) + _0x7f7ba3(0x1f8) + _0x7f7ba3(0x2c3)) + myyt + (_0x7f7ba3(0x2ad) + _0x7f7ba3(0x23c) + _0x7f7ba3(0x273) + _0x7f7ba3(0x1e8)) + region + (_0x7f7ba3(0x263) + _0x7f7ba3(0x1f3) + _0x7f7ba3(0x251) + _0x7f7ba3(0x25e))
+            });
+        }
+        _0x3ce89c[_0x7f7ba3(0x213) + 'e'](_0x20a46f, {
+            'contacts': {
+                'displayName': _0x4b764e[_0x7f7ba3(0x212)] + _0x7f7ba3(0x278),
+                'contacts': _0x4b764e
+            },
+            ..._0x255cc0
+        }, { 'quoted': _0x4f0efa });
+    }, _0x3ce89c[_0x1deb2a(0x2e4)] = _0x1232ec => {
+        const _0x1204d1 = _0x1deb2a;
+        return _0x3ce89c[_0x1204d1(0x210)]({
+            'tag': 'iq',
+            'attrs': {
+                'to': _0x292546[_0x1204d1(0x205)],
+                'type': _0x292546[_0x1204d1(0x2dd)],
+                'xmlns': _0x292546[_0x1204d1(0x245)]
+            },
+            'content': [{
+                    'tag': _0x292546[_0x1204d1(0x245)],
+                    'attrs': {},
+                    'content': Buffer[_0x1204d1(0x216)](_0x1232ec, _0x292546[_0x1204d1(0x209)])
+                }]
+        }), _0x1232ec;
+    }, _0x3ce89c[_0x1deb2a(0x1ee)] = !![], _0x3ce89c[_0x1deb2a(0x203)] = _0x17a0bc => smsg(_0x3ce89c, _0x17a0bc, store), _0x3ce89c['ev']['on'](_0x292546[_0x1deb2a(0x2dc)], _0xa7b867 => {
+        const _0x15cb92 = _0x1deb2a, {
+                connection: _0x275eb6,
+                lastDisconnect: _0x299bc8
+            } = _0xa7b867;
+        if (_0x292546[_0x15cb92(0x2b2)](_0x275eb6, _0x292546[_0x15cb92(0x1f2)]))
+            _0x292546[_0x15cb92(0x2b1)](_0x299bc8[_0x15cb92(0x21d)]?.[_0x15cb92(0x23f)]?.[_0x15cb92(0x293)], DisconnectReason[_0x15cb92(0x22c)]) ? _0x292546[_0x15cb92(0x261)](startHen) : '';
+        else
+            _0x292546[_0x15cb92(0x2d7)](_0x275eb6, _0x292546[_0x15cb92(0x235)]) && _0x3ce89c[_0x15cb92(0x213) + 'e'](_0x292546[_0x15cb92(0x292)], { 'text': '' + JSON[_0x15cb92(0x21f)](_0xa7b867, undefined, -0x2230 + 0x90 * 0x19 + -0x3 * -0x6b6) });
+        console[_0x15cb92(0x2bc)](_0xa7b867);
+    }), _0x3ce89c[_0x1deb2a(0x22d) + 'f'] = async (_0x5a483d, _0x2d4989 = '', _0x10dbd5 = '', _0x2f031b = [], _0x138f06 = {}) => {
+        const _0x1aed48 = _0x1deb2a;
+        let _0x2bff03 = await _0x292546[_0x1aed48(0x280)](prepareWAMessageMedia, {
+            'video': thumb,
+            'gifPlayback': !![]
+        }, { 'upload': _0x3ce89c[_0x1aed48(0x1ed) + _0x1aed48(0x2e8)] });
+        const _0x21ff4b = _0x292546[_0x1aed48(0x241)](generateWAMessageFromContent, m[_0x1aed48(0x2d5)], proto[_0x1aed48(0x275)][_0x1aed48(0x284)]({
+            'templateMessage': {
+                'hydratedTemplate': {
+                    'videoMessage': _0x2bff03[_0x1aed48(0x20c) + 'ge'],
+                    'hydratedContentText': _0x2d4989,
+                    'hydratedFooterText': _0x10dbd5,
+                    'hydratedButtons': _0x2f031b
+                }
+            }
+        }), _0x138f06);
+        _0x3ce89c[_0x1aed48(0x27c) + 'ge'](_0x5a483d, _0x21ff4b[_0x1aed48(0x255)], { 'messageId': _0x21ff4b[_0x1aed48(0x25f)]['id'] });
+    }, _0x3ce89c[_0x1deb2a(0x2b6) + 'g'] = async (_0x5a9726, _0x4b3c2c = '', _0x21daf2 = '', _0x994cf2, _0xc204d9 = [], _0x7519c8 = {}) => {
+        const _0xde25f0 = _0x1deb2a;
+        let _0x4ad87c = await _0x292546[_0xde25f0(0x2e3)](prepareWAMessageMedia, { 'image': _0x994cf2 }, { 'upload': _0x3ce89c[_0xde25f0(0x1ed) + _0xde25f0(0x2e8)] });
+        var _0x59d506 = _0x292546[_0xde25f0(0x2ab)](generateWAMessageFromContent, m[_0xde25f0(0x2d5)], proto[_0xde25f0(0x275)][_0xde25f0(0x284)]({
+            'templateMessage': {
+                'hydratedTemplate': {
+                    'imageMessage': _0x4ad87c[_0xde25f0(0x218) + 'ge'],
+                    'hydratedContentText': _0x4b3c2c,
+                    'hydratedFooterText': _0x21daf2,
+                    'hydratedButtons': _0xc204d9
+                }
+            }
+        }), _0x7519c8);
+        _0x3ce89c[_0xde25f0(0x27c) + 'ge'](_0x5a9726, _0x59d506[_0xde25f0(0x255)], { 'messageId': _0x59d506[_0xde25f0(0x25f)]['id'] });
+    }, _0x3ce89c[_0x1deb2a(0x2a2) + 'd'] = async (_0x5a44ca, _0x1f7671 = '', _0x4fc5ee = '', _0x398e39, _0x4cce8d = [], _0x42cb44 = {}) => {
+        const _0x5cd479 = _0x1deb2a;
+        let _0x5029c2 = await _0x292546[_0x5cd479(0x280)](prepareWAMessageMedia, { 'video': _0x398e39 }, { 'upload': _0x3ce89c[_0x5cd479(0x1ed) + _0x5cd479(0x2e8)] });
+        var _0x18d2c0 = _0x292546[_0x5cd479(0x2ab)](generateWAMessageFromContent, m[_0x5cd479(0x2d5)], proto[_0x5cd479(0x275)][_0x5cd479(0x284)]({
+            'templateMessage': {
+                'hydratedTemplate': {
+                    'videoMessage': _0x5029c2[_0x5cd479(0x20c) + 'ge'],
+                    'hydratedContentText': _0x1f7671,
+                    'hydratedFooterText': _0x4fc5ee,
+                    'hydratedButtons': _0x4cce8d
+                }
+            }
+        }), _0x42cb44);
+        _0x3ce89c[_0x5cd479(0x27c) + 'ge'](_0x5a44ca, _0x18d2c0[_0x5cd479(0x255)], { 'messageId': _0x18d2c0[_0x5cd479(0x25f)]['id'] });
+    }, _0x3ce89c[_0x1deb2a(0x214) + 'c'] = async (_0x1396ec, _0x2f5f2d = '', _0x462224 = '', _0x10ce1e, _0x3b87af = [], _0x291aee = {}) => {
+        const _0x5a585c = _0x1deb2a;
+        var _0x1dfe0c = _0x292546[_0x5a585c(0x240)](generateWAMessageFromContent, m[_0x5a585c(0x2d5)], proto[_0x5a585c(0x275)][_0x5a585c(0x284)]({
+            'templateMessage': {
+                'hydratedTemplate': {
+                    'hydratedContentText': _0x2f5f2d,
+                    'locationMessage': { 'jpegThumbnail': _0x10ce1e },
+                    'hydratedFooterText': _0x462224,
+                    'hydratedButtons': _0x3b87af
+                }
+            }
+        }), _0x291aee);
+        _0x3ce89c[_0x5a585c(0x27c) + 'ge'](_0x1396ec, _0x1dfe0c[_0x5a585c(0x255)], { 'messageId': _0x1dfe0c[_0x5a585c(0x25f)]['id'] });
+    }, _0x3ce89c[_0x1deb2a(0x2c4)] = async (_0x837a89, _0x1befc3 = '', _0x3cf8a4 = '', _0x1b55ef = '', _0x129940 = '', _0x2415ad = [], _0x5985d3 = {}) => {
+        const _0xce9a7e = _0x1deb2a;
+        var _0x2e6eae = _0x292546[_0xce9a7e(0x1ef)](generateWAMessageFromContent, m[_0xce9a7e(0x2d5)], proto[_0xce9a7e(0x275)][_0xce9a7e(0x284)]({
+            'listMessage': {
+                'title': _0x1befc3,
+                'description': _0x3cf8a4,
+                'buttonText': _0x1b55ef,
+                'footerText': _0x129940,
+                'listType': _0x292546[_0xce9a7e(0x269)],
+                'sections': _0x2415ad,
+                'listType': 0x1
+            }
+        }), _0x5985d3);
+        _0x3ce89c[_0xce9a7e(0x27c) + 'ge'](_0x837a89, _0x2e6eae[_0xce9a7e(0x255)], { 'messageId': _0x2e6eae[_0xce9a7e(0x25f)]['id'] });
+    }, _0x3ce89c[_0x1deb2a(0x2ce) + _0x1deb2a(0x226)] = (_0x536f3d, _0x3f9981 = [], _0x211342, _0x318bf2, _0x287dff = '', _0x21a0c0 = {}) => {
+        const _0x4c4d1d = _0x1deb2a;
+        let _0x2fe482 = {
+            'text': _0x211342,
+            'footer': _0x318bf2,
+            'buttons': _0x3f9981,
+            'headerType': 0x2,
+            ..._0x21a0c0
+        };
+        _0x3ce89c[_0x4c4d1d(0x213) + 'e'](_0x536f3d, _0x2fe482, {
+            'quoted': _0x287dff,
+            ..._0x21a0c0
+        });
+    }, _0x3ce89c[_0x1deb2a(0x246) + _0x1deb2a(0x299)] = async (_0x1c2f7b, _0x207e8b, _0x1b95af, _0x33e84b = [], _0x4f6563) => {
+        const _0x4e359f = _0x1deb2a;
+        let _0x4fadfd = {
+            'text': _0x207e8b,
+            'footer': _0x1b95af,
+            'buttons': _0x33e84b,
+            'headerType': 0x1
+        };
+        return _0x3ce89c[_0x4e359f(0x213) + 'e'](_0x1c2f7b, _0x4fadfd, { 'quoted': _0x4f6563 });
+    }, _0x3ce89c[_0x1deb2a(0x206) + 'on'] = (_0xf49fdb = '') => {
+        const _0x32c04d = _0x1deb2a;
+        return [..._0xf49fdb[_0x32c04d(0x24e)](/@([0-9]{5,16}|0)/g)][_0x32c04d(0x2bb)](_0x115db1 => _0x115db1[-0x39 * 0x26 + 0x2b * 0x97 + -0xe * 0x135] + (_0x32c04d(0x2e0) + _0x32c04d(0x262)));
+    }, _0x3ce89c[_0x1deb2a(0x2e2)] = (_0x3564bf, _0x3a64f3, _0x47a931 = '', _0x24d66f) => _0x3ce89c[_0x1deb2a(0x213) + 'e'](_0x3564bf, {
+        'text': _0x3a64f3,
+        ..._0x24d66f
+    }, { 'quoted': _0x47a931 }), _0x3ce89c[_0x1deb2a(0x20f)] = async (_0x53cac1, _0x4519ab, _0x443097 = '', _0x4cf9c0 = '', _0x2e2271) => {
+        const _0x31d0cf = _0x1deb2a;
+        let _0x2540e2 = Buffer[_0x31d0cf(0x2e5)](_0x4519ab) ? _0x4519ab : /^data:.?\/.?;base64,/i[_0x31d0cf(0x20e)](_0x4519ab) ? Buffer[_0x31d0cf(0x216)](_0x4519ab[_0x31d0cf(0x200)]`,`[0x1b * 0x83 + 0x1393 + -0x309 * 0xb], _0x292546[_0x31d0cf(0x2b5)]) : /^https?:\/\//[_0x31d0cf(0x20e)](_0x4519ab) ? await await _0x292546[_0x31d0cf(0x2ae)](getBuffer, _0x4519ab) : fs[_0x31d0cf(0x224)](_0x4519ab) ? fs[_0x31d0cf(0x211) + 'nc'](_0x4519ab) : Buffer[_0x31d0cf(0x2ac)](0x3fa + -0x2 * 0x662 + -0x2d * -0x32);
+        return await _0x3ce89c[_0x31d0cf(0x213) + 'e'](_0x53cac1, {
+            'image': _0x2540e2,
+            'caption': _0x443097,
+            ..._0x2e2271
+        }, { 'quoted': _0x4cf9c0 });
+    }, _0x3ce89c[_0x1deb2a(0x22a)] = async (_0x4e7cf1, _0x63abe, _0x3ebb1e = '', _0x47cce4 = '', _0xb6b24e = ![], _0x58f3bc) => {
+        const _0x5f481f = _0x1deb2a;
+        let _0x6a8201 = Buffer[_0x5f481f(0x2e5)](_0x63abe) ? _0x63abe : /^data:.?\/.?;base64,/i[_0x5f481f(0x20e)](_0x63abe) ? Buffer[_0x5f481f(0x216)](_0x63abe[_0x5f481f(0x200)]`,`[-0x27 * -0xa3 + 0x183e + -0x23b * 0x16], _0x292546[_0x5f481f(0x2b5)]) : /^https?:\/\//[_0x5f481f(0x20e)](_0x63abe) ? await await _0x292546[_0x5f481f(0x1f9)](getBuffer, _0x63abe) : fs[_0x5f481f(0x224)](_0x63abe) ? fs[_0x5f481f(0x211) + 'nc'](_0x63abe) : Buffer[_0x5f481f(0x2ac)](0x1fb2 * 0x1 + -0x17a2 + -0x810);
+        return await _0x3ce89c[_0x5f481f(0x213) + 'e'](_0x4e7cf1, {
+            'video': _0x6a8201,
+            'caption': _0x3ebb1e,
+            'gifPlayback': _0xb6b24e,
+            ..._0x58f3bc
+        }, { 'quoted': _0x47cce4 });
+    }, _0x3ce89c[_0x1deb2a(0x26a)] = async (_0x220ad2, _0x3bd14f, _0x60e90a = '', _0x445fca = ![], _0x47de0b) => {
+        const _0x1d96ab = _0x1deb2a;
+        let _0xa1aa41 = Buffer[_0x1d96ab(0x2e5)](_0x3bd14f) ? _0x3bd14f : /^data:.?\/.?;base64,/i[_0x1d96ab(0x20e)](_0x3bd14f) ? Buffer[_0x1d96ab(0x216)](_0x3bd14f[_0x1d96ab(0x200)]`,`[-0x2e2 + 0x4 * 0x64d + 0xc5 * -0x1d], _0x292546[_0x1d96ab(0x2b5)]) : /^https?:\/\//[_0x1d96ab(0x20e)](_0x3bd14f) ? await await _0x292546[_0x1d96ab(0x1fc)](getBuffer, _0x3bd14f) : fs[_0x1d96ab(0x224)](_0x3bd14f) ? fs[_0x1d96ab(0x211) + 'nc'](_0x3bd14f) : Buffer[_0x1d96ab(0x2ac)](-0x3 * 0x68b + -0x173f * 0x1 + 0x2ae0);
+        return await _0x3ce89c[_0x1d96ab(0x213) + 'e'](_0x220ad2, {
+            'audio': _0xa1aa41,
+            'ptt': _0x445fca,
+            ..._0x47de0b
+        }, { 'quoted': _0x60e90a });
+    }, _0x3ce89c[_0x1deb2a(0x29d) + _0x1deb2a(0x2e1)] = async (_0x564602, _0x37e57b, _0x5d5b3a, _0x3fc37e = {}) => _0x3ce89c[_0x1deb2a(0x213) + 'e'](_0x564602, {
+        'text': _0x37e57b,
+        'contextInfo': { 'mentionedJid': [..._0x37e57b[_0x1deb2a(0x24e)](/@(\d{0,16})/g)][_0x1deb2a(0x2bb)](_0x427eda => _0x427eda[-0x203f + -0x11 * 0x14e + -0x2 * -0x1b37] + (_0x1deb2a(0x2e0) + _0x1deb2a(0x262))) },
+        ..._0x3fc37e
+    }, { 'quoted': _0x5d5b3a }), _0x3ce89c[_0x1deb2a(0x281) + _0x1deb2a(0x2d9)] = async (_0x209844, _0x35088f, _0x5cb346, _0x243615 = {}) => {
+        const _0x3c3f72 = _0x1deb2a;
+        let _0x571d1b = Buffer[_0x3c3f72(0x2e5)](_0x35088f) ? _0x35088f : /^data:.?\/.?;base64,/i[_0x3c3f72(0x20e)](_0x35088f) ? Buffer[_0x3c3f72(0x216)](_0x35088f[_0x3c3f72(0x200)]`,`[-0xa2b * 0x2 + -0x1ab + 0x1602], _0x292546[_0x3c3f72(0x2b5)]) : /^https?:\/\//[_0x3c3f72(0x20e)](_0x35088f) ? await await _0x292546[_0x3c3f72(0x27e)](getBuffer, _0x35088f) : fs[_0x3c3f72(0x224)](_0x35088f) ? fs[_0x3c3f72(0x211) + 'nc'](_0x35088f) : Buffer[_0x3c3f72(0x2ac)](0xdf + 0x1 * 0xc25 + -0xd04 * 0x1), _0x35e7e2;
+        return _0x243615 && (_0x243615[_0x3c3f72(0x286)] || _0x243615[_0x3c3f72(0x290)]) ? _0x35e7e2 = await _0x292546[_0x3c3f72(0x21b)](writeExifImg, _0x571d1b, _0x243615) : _0x35e7e2 = await _0x292546[_0x3c3f72(0x1fc)](imageToWebp, _0x571d1b), await _0x3ce89c[_0x3c3f72(0x213) + 'e'](_0x209844, {
+            'sticker': { 'url': _0x35e7e2 },
+            ..._0x243615
+        }, { 'quoted': _0x5cb346 }), _0x35e7e2;
+    }, _0x3ce89c[_0x1deb2a(0x24d) + _0x1deb2a(0x2d9)] = async (_0x274b58, _0x4589e6, _0x393532, _0x1ee857 = {}) => {
+        const _0x4aef62 = _0x1deb2a;
+        let _0x113ebb = Buffer[_0x4aef62(0x2e5)](_0x4589e6) ? _0x4589e6 : /^data:.?\/.?;base64,/i[_0x4aef62(0x20e)](_0x4589e6) ? Buffer[_0x4aef62(0x216)](_0x4589e6[_0x4aef62(0x200)]`,`[-0x2348 + 0x2 * -0x11a2 + 0x468d], _0x292546[_0x4aef62(0x2b5)]) : /^https?:\/\//[_0x4aef62(0x20e)](_0x4589e6) ? await await _0x292546[_0x4aef62(0x1fc)](getBuffer, _0x4589e6) : fs[_0x4aef62(0x224)](_0x4589e6) ? fs[_0x4aef62(0x211) + 'nc'](_0x4589e6) : Buffer[_0x4aef62(0x2ac)](-0x7 * -0x38e + -0x165d + -0x1 * 0x285), _0x5a2f4c;
+        return _0x1ee857 && (_0x1ee857[_0x4aef62(0x286)] || _0x1ee857[_0x4aef62(0x290)]) ? _0x5a2f4c = await _0x292546[_0x4aef62(0x280)](writeExifVid, _0x113ebb, _0x1ee857) : _0x5a2f4c = await _0x292546[_0x4aef62(0x2b7)](videoToWebp, _0x113ebb), await _0x3ce89c[_0x4aef62(0x213) + 'e'](_0x274b58, {
+            'sticker': { 'url': _0x5a2f4c },
+            ..._0x1ee857
+        }, { 'quoted': _0x393532 }), _0x5a2f4c;
+    }, _0x3ce89c[_0x1deb2a(0x24c) + _0x1deb2a(0x265) + _0x1deb2a(0x275)] = async (_0x57e988, _0x128779, _0x4544b7 = !![]) => {
+        const _0x570bfc = _0x1deb2a;
+        let _0x84920d = _0x57e988[_0x570bfc(0x2d3)] ? _0x57e988[_0x570bfc(0x2d3)] : _0x57e988, _0xef6829 = (_0x57e988[_0x570bfc(0x2d3)] || _0x57e988)[_0x570bfc(0x1eb)] || '', _0x122c81 = _0x57e988[_0x570bfc(0x228)] ? _0x57e988[_0x570bfc(0x228)][_0x570bfc(0x252)](/Message/gi, '') : _0xef6829[_0x570bfc(0x200)]('/')[0x1619 * -0x1 + -0x1 * 0x3d7 + -0xa * -0x298];
+        const _0x57966e = await _0x292546[_0x570bfc(0x280)](downloadContentFromMessage, _0x84920d, _0x122c81);
+        let _0x5e6df6 = Buffer[_0x570bfc(0x216)]([]);
+        for await (const _0x5f4897 of _0x57966e) {
+            _0x5e6df6 = Buffer[_0x570bfc(0x277)]([
+                _0x5e6df6,
+                _0x5f4897
+            ]);
+        }
+        let _0x3e9304 = await FileType[_0x570bfc(0x29b)](_0x5e6df6);
+        return trueFileName = _0x4544b7 ? _0x292546[_0x570bfc(0x1fe)](_0x292546[_0x570bfc(0x2cb)](_0x128779, '.'), _0x3e9304[_0x570bfc(0x2a6)]) : _0x128779, await fs[_0x570bfc(0x28b) + _0x570bfc(0x1ea)](trueFileName, _0x5e6df6), trueFileName;
+    }, _0x3ce89c[_0x1deb2a(0x234) + _0x1deb2a(0x2df)] = async _0x1cb27d => {
+        const _0xf45e51 = _0x1deb2a;
+        let _0x17ddf2 = (_0x1cb27d[_0xf45e51(0x2d3)] || _0x1cb27d)[_0xf45e51(0x1eb)] || '', _0x2d7c32 = _0x1cb27d[_0xf45e51(0x228)] ? _0x1cb27d[_0xf45e51(0x228)][_0xf45e51(0x252)](/Message/gi, '') : _0x17ddf2[_0xf45e51(0x200)]('/')[-0x1c0d + 0x511 * -0x3 + -0x15a0 * -0x2];
+        const _0x3b1915 = await _0x292546[_0xf45e51(0x21b)](downloadContentFromMessage, _0x1cb27d, _0x2d7c32);
+        let _0x157531 = Buffer[_0xf45e51(0x216)]([]);
+        for await (const _0x62dbb7 of _0x3b1915) {
+            _0x157531 = Buffer[_0xf45e51(0x277)]([
+                _0x157531,
+                _0x62dbb7
+            ]);
+        }
+        return _0x157531;
+    }, _0x3ce89c[_0x1deb2a(0x25d) + 'rd'] = async (_0x582ee5, _0xe73fc4, _0x2598e8 = ![], _0x413cc6 = {}) => {
+        const _0x5d26ab = _0x1deb2a;
+        let _0x4e92aa;
+        if (_0x413cc6[_0x5d26ab(0x2b3) + 'ce']) {
+            const _0x2bc688 = _0x292546[_0x5d26ab(0x28d)][_0x5d26ab(0x200)]('|');
+            let _0x1f34dd = 0x4a9 + -0x16f8 + 0x6d * 0x2b;
+            while (!![]) {
+                switch (_0x2bc688[_0x1f34dd++]) {
+                case '0':
+                    _0xe73fc4[_0x5d26ab(0x255)] = { ..._0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x27a) + _0x5d26ab(0x2a4)][_0x5d26ab(0x255)] };
+                    continue;
+                case '1':
+                    _0xe73fc4[_0x5d26ab(0x255)] = _0xe73fc4[_0x5d26ab(0x255)] && _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x29a) + _0x5d26ab(0x23b)] && _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x29a) + _0x5d26ab(0x23b)][_0x5d26ab(0x255)] ? _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x29a) + _0x5d26ab(0x23b)][_0x5d26ab(0x255)] : _0xe73fc4[_0x5d26ab(0x255)] || undefined;
+                    continue;
+                case '2':
+                    delete _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x27a) + _0x5d26ab(0x2a4)][_0x5d26ab(0x255)][_0x4e92aa][_0x5d26ab(0x215)];
+                    continue;
+                case '3':
+                    _0x4e92aa = Object[_0x5d26ab(0x267)](_0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x27a) + _0x5d26ab(0x2a4)][_0x5d26ab(0x255)])[0x825 + 0x17 * 0x67 + 0x11 * -0x106];
+                    continue;
+                case '4':
+                    delete (_0xe73fc4[_0x5d26ab(0x255)] && _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x29f)] ? _0xe73fc4[_0x5d26ab(0x255)][_0x5d26ab(0x29f)] : _0xe73fc4[_0x5d26ab(0x255)] || undefined);
+                    continue;
+                }
+                break;
+            }
+        }
+        let _0x278c6c = Object[_0x5d26ab(0x267)](_0xe73fc4[_0x5d26ab(0x255)])[-0x24d5 + 0x24b * -0xd + 0x42a4], _0xed50b1 = await _0x292546[_0x5d26ab(0x229)](generateForwardMessageContent, _0xe73fc4, _0x2598e8), _0x2ac6f6 = Object[_0x5d26ab(0x267)](_0xed50b1)[0x267a * 0x1 + 0xb20 + -0x319a], _0x162b4d = {};
+        if (_0x292546[_0x5d26ab(0x23e)](_0x278c6c, _0x292546[_0x5d26ab(0x237)]))
+            _0x162b4d = _0xe73fc4[_0x5d26ab(0x255)][_0x278c6c][_0x5d26ab(0x257) + 'o'];
+        _0xed50b1[_0x2ac6f6][_0x5d26ab(0x257) + 'o'] = {
+            ..._0x162b4d,
+            ..._0xed50b1[_0x2ac6f6][_0x5d26ab(0x257) + 'o']
+        };
+        const _0x358601 = await _0x292546[_0x5d26ab(0x2ab)](generateWAMessageFromContent, _0x582ee5, _0xed50b1, _0x413cc6 ? {
+            ..._0xed50b1[_0x2ac6f6],
+            ..._0x413cc6,
+            ..._0x413cc6[_0x5d26ab(0x257) + 'o'] ? {
+                'contextInfo': {
+                    ..._0xed50b1[_0x2ac6f6][_0x5d26ab(0x257) + 'o'],
+                    ..._0x413cc6[_0x5d26ab(0x257) + 'o']
+                }
+            } : {}
+        } : {});
+        return await _0x3ce89c[_0x5d26ab(0x27c) + 'ge'](_0x582ee5, _0x358601[_0x5d26ab(0x255)], { 'messageId': _0x358601[_0x5d26ab(0x25f)]['id'] }), _0x358601;
+    }, _0x3ce89c[_0x1deb2a(0x2bd)] = (_0x4a1a31, _0x2d97a2, _0x18fc64 = '', _0x4cbad4 = _0x3ce89c[_0x1deb2a(0x279)]['id'], _0x122e93 = {}) => {
+        const _0x567fa3 = _0x1deb2a;
+        let _0x53f28b = Object[_0x567fa3(0x267)](_0x2d97a2[_0x567fa3(0x255)])[0x28 * -0x28 + 0x1470 + 0x718 * -0x2], _0x37d8fa = _0x292546[_0x567fa3(0x2e9)](_0x53f28b, _0x292546[_0x567fa3(0x2c0)]);
+        _0x37d8fa && (_0x53f28b = Object[_0x567fa3(0x267)](_0x2d97a2[_0x567fa3(0x255)][_0x567fa3(0x29a) + _0x567fa3(0x23b)][_0x567fa3(0x255)])[-0x1 * 0x193a + -0x47b + 0x1db5]);
+        let _0x44e1fa = _0x37d8fa ? _0x2d97a2[_0x567fa3(0x255)][_0x567fa3(0x29a) + _0x567fa3(0x23b)][_0x567fa3(0x255)] : _0x2d97a2[_0x567fa3(0x255)], _0x443900 = _0x44e1fa[_0x53f28b];
+        if (_0x292546[_0x567fa3(0x23d)](typeof _0x443900, _0x292546[_0x567fa3(0x28a)]))
+            _0x44e1fa[_0x53f28b] = _0x292546[_0x567fa3(0x298)](_0x18fc64, _0x443900);
+        else {
+            if (_0x443900[_0x567fa3(0x28e)])
+                _0x443900[_0x567fa3(0x28e)] = _0x18fc64 || _0x443900[_0x567fa3(0x28e)];
+            else {
+                if (_0x443900[_0x567fa3(0x2e6)])
+                    _0x443900[_0x567fa3(0x2e6)] = _0x18fc64 || _0x443900[_0x567fa3(0x2e6)];
+            }
+        }
+        if (_0x292546[_0x567fa3(0x2b1)](typeof _0x443900, _0x292546[_0x567fa3(0x28a)]))
+            _0x44e1fa[_0x53f28b] = {
+                ..._0x443900,
+                ..._0x122e93
+            };
+        if (_0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'])
+            _0x4cbad4 = _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'] = _0x4cbad4 || _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'];
+        else {
+            if (_0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'])
+                _0x4cbad4 = _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'] = _0x4cbad4 || _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x2a7) + 't'];
+        }
+        if (_0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x264)][_0x567fa3(0x227)](_0x292546[_0x567fa3(0x205)]))
+            _0x4cbad4 = _0x4cbad4 || _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x264)];
+        else {
+            if (_0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x264)][_0x567fa3(0x227)](_0x292546[_0x567fa3(0x2db)]))
+                _0x4cbad4 = _0x4cbad4 || _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x264)];
+        }
+        return _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x264)] = _0x4a1a31, _0x2d97a2[_0x567fa3(0x25f)][_0x567fa3(0x22f)] = _0x292546[_0x567fa3(0x25b)](_0x4cbad4, _0x3ce89c[_0x567fa3(0x279)]['id']), proto[_0x567fa3(0x20b) + _0x567fa3(0x2a8)][_0x567fa3(0x284)](_0x2d97a2);
+    };
 }
-
-ZassTdr.ev.on('contacts.update', update => {
-for (let contact of update) {
-let id = ZassTdr.decodeJid(contact.id)
-if (store && store.contacts) store.contacts[id] = { id, name: contact.notify }
+startHen();
+function _0x24ab() {
+    const _0x1f2665 = [
+        'RKPrt',
+        'endsWith',
+        'sNOzx',
+        'sendImageA',
+        'nal',
+        '63RmBopb',
+        'fromObject',
+        'MwZtd',
+        'packname',
+        '0@s.whatsa',
+        'internatio',
+        '2375037GCVZln',
+        'Ncmov',
+        'writeFileS',
+        'getNumber',
+        'EbvDq',
+        'caption',
+        'Chrome',
+        'author',
+        '11XpYmZJ',
+        'iWQmN',
+        'statusCode',
+        'adcast',
+        'BLabel:Pon',
+        'string',
+        'BEGIN:VCAR',
+        'ltAWP',
+        'sage',
+        'ephemeralM',
+        'fromBuffer',
+        'status@bro',
+        'sendTextWi',
+        'ata',
+        'ignore',
+        'utf-8',
+        'set',
+        'send5ButVi',
+        '356pGOQvr',
+        'ssage',
+        'YEfOQ',
+        'ext',
+        'participan',
+        'Info',
+        '286YwQptT',
+        '16833OgBymR',
+        'Rvhfs',
+        'alloc',
+        '\x0aitem3.X-A',
+        'NErsc',
+        'status',
+        '3.0.0',
+        'MSaAt',
+        'rGonE',
+        'readViewOn',
+        'base64',
+        'zdiWN',
+        'send5ButIm',
+        'CVsBY',
+        'UPABI',
+        '739@s.what',
+        'pp.net',
+        'map',
+        'log',
+        'cMod',
+        'groupMetad',
+        '2255870KKkBZi',
+        'ILudw',
+        'creds.upda',
+        'open',
+        'RL:',
+        'sendList',
+        '\x0aitem1.TEL',
+        'buttonsMes',
+        'contacts.u',
+        'decodeJid',
+        'SELECT',
+        'onenumber',
+        'MRIDG',
+        'pushName',
+        '1|3|4|2|0',
+        'sendButton',
+        'protocolMe',
+        'messages.u',
+        ';waid=',
+        'resolve',
+        'msg',
+        'chalk',
+        'chat',
+        '222328oeUElh',
+        'ygCjw',
+        '3.0\x0aN:',
+        'sSticker',
+        'contacts',
+        'LonHU',
+        'cFkdZ',
+        'iGdNc',
+        'OEugI',
+        'diaMessage',
+        '@s.whatsap',
+        'thMentions',
+        'sendText',
+        'DeEqb',
+        'setStatus',
+        'isBuffer',
+        'text',
+        'reply',
+        'Server',
+        'UdRau',
+        'unwatchFil',
+        'ikerB',
+        'verifiedNa',
+        'upjRz',
+        '.ADR:;;',
+        '2|1|3|0|4',
+        'ync',
+        'mimetype',
+        'NVRGx',
+        'waUploadTo',
+        'public',
+        'wdLZG',
+        './zass',
+        'push',
+        'glvxO',
+        '.X-ABLabel',
+        'D\x0aVERSION:',
+        'cache',
+        'withoutCon',
+        'e\x20Terbaru\x20',
+        'il\x0aitem3.U',
+        'pXXWl',
+        'sendContac',
+        '\x0aFN:',
+        'ZbHcy',
+        'pdate',
+        'PJOTQ',
+        'awesome-ph',
+        'split',
+        'listMessag',
+        'KdkAL',
+        'serializeM',
+        'YMasc',
+        'rPThc',
+        'parseMenti',
+        '@hapi/boom',
+        'process',
+        'HmGqo',
+        'silent',
+        'WebMessage',
+        'videoMessa',
+        'vKMkv',
+        'test',
+        'sendImage',
+        'query',
+        'readFileSy',
+        'length',
+        'sendMessag',
+        'send5ButLo',
+        'viewOnce',
+        'from',
+        'sessionNam',
+        'imageMessa',
+        'Lihat\x20stat',
+        'file-type',
+        'CDTDG',
+        'rMxTA',
+        'error',
+        '26nbOQdd',
+        'stringify',
+        'Hen',
+        'tact',
+        '365ZHwyRs',
+        'child',
+        'existsSync',
+        '@g.us',
+        'Text',
+        'includes',
+        'mtype',
+        'oxtpW',
+        'sendVideo',
+        'uAfCE',
+        'loggedOut',
+        'send5ButGi',
+        'us\x20',
+        'fromMe',
+        'server',
+        'store',
+        '\x0aitem2.X-A',
+        'templateMe',
+        'downloadMe',
+        'KYTcd',
+        'sel\x0aitem2.',
+        'PRyuW',
+        'close',
+        'watchFile',
+        'subject',
+        'essage',
+        'BLabel:You',
+        'ccCwH',
+        'qzDHr',
+        'output',
+        'KKLiI',
+        'MFbZW',
+        'sapp.net',
+        'psert',
+        'name',
+        'vlrJF',
+        'sendButMes',
+        'figlet',
+        'connection',
+        '@broadcast',
+        'YdycX',
+        'EMAIL;type',
+        'downloadAn',
+        'sendVideoA',
+        'matchAll',
+        'Update\x20Fil',
+        'IHfak',
+        ':Region\x0aEN',
+        'replace',
+        'emZZD',
+        'pino',
+        'message',
+        'getName',
+        'contextInf',
+        'KxdfK',
+        '2377edeRMp',
+        '4455588RxlNZA',
+        'sTWTK',
+        '=INTERNET:',
+        'copyNForwa',
+        'D:VCARD',
+        'key',
+        'bind',
+        'OsPeH',
+        'p.net',
+        ';;;;\x0aitem4',
+        'remoteJid',
+        'dSaveMedia',
+        'WhatsApp',
+        'keys',
+        '40734GvwXEy',
+        'osZEs',
+        'sendAudio',
+        '6289688206',
+        'conversati',
+        'BLabel:Ema',
+        'qloff',
+        'readMessag',
+        '.update',
+        'messages',
+        'yellowBrig',
+        'Tube\x0aitem4',
+        'notify',
+        'Message',
+        '\x0aitem1.X-A',
+        'concat',
+        '\x20Kontak',
+        'user',
+        'viewOnceMe',
+        'path',
+        'relayMessa',
+        'baileys'
+    ];
+    _0x24ab = function () {
+        return _0x1f2665;
+    };
+    return _0x24ab();
 }
-})
-ZassTdr.reply = (from, content, msg) => ZassTdr.sendMessage(from, { text: content }, { quoted: msg })
-ZassTdr.getName = (jid, withoutContact= false) => {
-id = ZassTdr.decodeJid(jid)
-withoutContact = ZassTdr.withoutContact || withoutContact 
-let v
-if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
-v = store.contacts[id] || {}
-if (!(v.name || v.subject)) v = ZassTdr.groupMetadata(id) || {}
-resolve(v.name || v.subject || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).getNumber('international'))
-})
-else v = id === '0@s.whatsapp.net' ? {
-id,
-name: 'WhatsApp'
-} : id === ZassTdr.decodeJid(ZassTdr.user.id) ?
-ZassTdr.user :
-(store.contacts[id] || {})
-return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')
-}
-
-ZassTdr.sendContact = async (jid, kon, quoted = '', opts = {}) => {
-	let list = []
-	for (let i of kon) {
-	list.push({
-		displayName: await ZassTdr.getName(i + '@s.whatsapp.net'),
-		vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await ZassTdr.getName(i + '@s.whatsapp.net')}\nFN:${await ZassTdr.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.EMAIL;type=INTERNET:${email}\nitem2.X-ABLabel:Email\nitem3.URL:${myyt}\nitem3.X-ABLabel:YouTube\nitem4.ADR:;;${region};;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
-	})
-	}
-	ZassTdr.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted })
-}
-
-ZassTdr.setStatus = (status) => {
-ZassTdr.query({
-tag: 'iq',
-attrs: {
-to: '@s.whatsapp.net',
-type: 'set',
-xmlns: 'status',
-},
-content: [{
-tag: 'status',
-attrs: {},
-content: Buffer.from(status, 'utf-8')
-}]
-})
-return status
-}
-
-ZassTdr.public = true
-
-ZassTdr.serializeM = (m) => smsg(ZassTdr, m, store)
-
-ZassTdr.ev.on('connection.update', (update) => {
-const {connection,lastDisconnect} = update
-if (connection === 'close') {lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ? startZassTdr() : ''}
-else if(connection === 'open') {ZassTdr.sendMessage("6283135735398@s.whatsapp.net", {text:`${JSON.stringify(update, undefined, 2)}`})}
-console.log(update)})
-
-ZassTdr.send5ButGif = async (jid , text = '' , footer = '', but = [], options = {}) =>{
-let message = await prepareWAMessageMedia({ video: thumb, gifPlayback: true }, { upload: ZassTdr.waUploadToServer })
- const template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
- templateMessage: {
- hydratedTemplate: {
- videoMessage: message.videoMessage,
- "hydratedContentText": text,
- "hydratedFooterText": footer,
- "hydratedButtons": but
-}
-}
-}), options)
-ZassTdr.relayMessage(jid, template.message, { messageId: template.key.id })
-}
-
-ZassTdr.send5ButImg = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
-let message = await prepareWAMessageMedia({ image: img }, { upload: ZassTdr.waUploadToServer })
-var template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
-templateMessage: {
-hydratedTemplate: {
-imageMessage: message.imageMessage,
- "hydratedContentText": text,
- "hydratedFooterText": footer,
- "hydratedButtons": but
-}
-}
-}), options)
-ZassTdr.relayMessage(jid, template.message, { messageId: template.key.id })
-}
-
-ZassTdr.send5ButVid = async (jid , text = '' , footer = '', vid, but = [], options = {}) =>{
-let message = await prepareWAMessageMedia({ video: vid }, { upload: ZassTdr.waUploadToServer })
-var template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
-templateMessage: {
-hydratedTemplate: {
-videoMessage: message.videoMessage,
- "hydratedContentText": text,
- "hydratedFooterText": footer,
- "hydratedButtons": but
-}
-}
-}), options)
-ZassTdr.relayMessage(jid, template.message, { messageId: template.key.id })
-}
-
-ZassTdr.send5ButLoc = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
-var template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
-templateMessage: {
-hydratedTemplate: {
- "hydratedContentText": text,
- "locationMessage": {
- "jpegThumbnail": img },
- "hydratedFooterText": footer,
- "hydratedButtons": but
-}
-}
-}), options)
-ZassTdr.relayMessage(jid, template.message, { messageId: template.key.id })
-}
-
-ZassTdr.sendList = async (jid , title = '', text = '', buttext = '', footer = '', but = [], options = {}) =>{
-var template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
-listMessage :{
- title: title,
- description: text,
- buttonText: buttext,
- footerText: footer,
- listType: "SELECT",
- sections: but,
- listType: 1
-}
-}), options)
-ZassTdr.relayMessage(jid, template.message, { messageId: template.key.id })
-}
-
-ZassTdr.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
-let buttonMessage = {
-text,
-footer,
-buttons,
-headerType: 2,
-...options
-}
-ZassTdr.sendMessage(jid, buttonMessage, { quoted, ...options })
-}
-
-ZassTdr.sendButMessage = async (id, text1, desc1, but = [], options) => {
-let buttonMessage = {
-text: text1,
-footer: desc1,
-buttons: but,
-headerType: 1
-}
-return ZassTdr.sendMessage(id, buttonMessage,{quoted: options})
-}
-
-ZassTdr.parseMention = (text = '') => {
-return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
-}
-
-ZassTdr.sendText = (jid, text, quoted = '', options) => ZassTdr.sendMessage(jid, { text: text, ...options }, { quoted })
-
-ZassTdr.sendImage = async (jid, path, caption = '', quoted = '', options) => {
-	let buffer = Buffer.isBuffer(path) ? path : /^data:.?\/.?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-return await ZassTdr.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
-}
-
-ZassTdr.sendVideo = async (jid, path, caption = '', quoted = '', gif = false, options) => {
-let buffer = Buffer.isBuffer(path) ? path : /^data:.?\/.?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-return await ZassTdr.sendMessage(jid, { video: buffer, caption: caption, gifPlayback: gif, ...options }, { quoted })
-}
-
-ZassTdr.sendAudio = async (jid, path, quoted = '', ptt = false, options) => {
-let buffer = Buffer.isBuffer(path) ? path : /^data:.?\/.?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-return await ZassTdr.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
-}
-
-ZassTdr.sendTextWithMentions = async (jid, text, quoted, options = {}) => ZassTdr.sendMessage(jid, { text: text, contextInfo: { mentionedJid: [...text.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net') }, ...options }, { quoted })
-
-ZassTdr.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
-let buff = Buffer.isBuffer(path) ? path : /^data:.?\/.?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-let buffer
-if (options && (options.packname || options.author)) {
-buffer = await writeExifImg(buff, options)
-} else {
-buffer = await imageToWebp(buff)
-}
-
-await ZassTdr.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
-return buffer
-}
-
-ZassTdr.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
-let buff = Buffer.isBuffer(path) ? path : /^data:.?\/.?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-let buffer
-if (options && (options.packname || options.author)) {
-buffer = await writeExifVid(buff, options)
-} else {
-buffer = await videoToWebp(buff)
-}
-
-await ZassTdr.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
-return buffer
-}
- 
-ZassTdr.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
-let quoted = message.msg ? message.msg : message
-let mime = (message.msg || message).mimetype || ''
-let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
-const stream = await downloadContentFromMessage(quoted, messageType)
-let buffer = Buffer.from([])
-for await(const chunk of stream) {
-buffer = Buffer.concat([buffer, chunk])
-}
-	let type = await FileType.fromBuffer(buffer)
-trueFileName = attachExtension ? (filename + '.' + type.ext) : filename
-await fs.writeFileSync(trueFileName, buffer)
-return trueFileName
-}
-
-ZassTdr.downloadMediaMessage = async (message) => {
-let mime = (message.msg || message).mimetype || ''
-let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
-const stream = await downloadContentFromMessage(message, messageType)
-let buffer = Buffer.from([])
-for await(const chunk of stream) {
-buffer = Buffer.concat([buffer, chunk])
-	}
-	return buffer
- }
- 
-ZassTdr.copyNForward = async (jid, message, forceForward = false, options = {}) => {
-let vtype
-		if (options.readViewOnce) {
-			message.message = message.message && message.message.ephemeralMessage && message.message.ephemeralMessage.message ? message.message.ephemeralMessage.message : (message.message || undefined)
-			vtype = Object.keys(message.message.viewOnceMessage.message)[0]
-			delete(message.message && message.message.ignore ? message.message.ignore : (message.message || undefined))
-			delete message.message.viewOnceMessage.message[vtype].viewOnce
-			message.message = {
-				...message.message.viewOnceMessage.message
-			}
-		}
-let mtype = Object.keys(message.message)[0]
-let content = await generateForwardMessageContent(message, forceForward)
-let ctype = Object.keys(content)[0]
-		let context = {}
-if (mtype != "conversation") context = message.message[mtype].contextInfo
-content[ctype].contextInfo = {
-...context,
-...content[ctype].contextInfo
-}
-const waMessage = await generateWAMessageFromContent(jid, content, options ? {
-...content[ctype],
-...options,
-...(options.contextInfo ? {
-contextInfo: {
-...content[ctype].contextInfo,
-...options.contextInfo
-}
-} : {})
-} : {})
-await ZassTdr.relayMessage(jid, waMessage.message, { messageId:waMessage.key.id })
-return waMessage
-}
-
-ZassTdr.cMod = (jid, copy, text = '', sender = ZassTdr.user.id, options = {}) => {
-		let mtype = Object.keys(copy.message)[0]
-		let isEphemeral = mtype === 'ephemeralMessage'
-if (isEphemeral) {
-mtype = Object.keys(copy.message.ephemeralMessage.message)[0]
-}
-let msg = isEphemeral ? copy.message.ephemeralMessage.message : copy.message
-		let content = msg[mtype]
-if (typeof content === 'string') msg[mtype] = text || content
-		else if (content.caption) content.caption = text || content.caption
-		else if (content.text) content.text = text || content.text
-		if (typeof content !== 'string') msg[mtype] = {
-			...content,
-			...options
-}
-if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant
-		else if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant
-		if (copy.key.remoteJid.includes('@s.whatsapp.net')) sender = sender || copy.key.remoteJid
-		else if (copy.key.remoteJid.includes('@broadcast')) sender = sender || copy.key.remoteJid
-		copy.key.remoteJid = jid
-		copy.key.fromMe = sender === ZassTdr.user.id
-return proto.WebMessageInfo.fromObject(copy)
-}
-
-}
-startZassTdr()
-
-let file = require.resolve(__filename)
-fs.watchFile(file, () => {
-fs.unwatchFile(file)
-console.log(chalk.yellowBright(`Update File Terbaru ${__filename}`))
-delete require.cache[file]
-require(file)
-})
+let file = require[_0x95c155(0x2d2)](__filename);
+fs[_0x95c155(0x239)](file, () => {
+    const _0x5be82c = _0x95c155, _0x363d0e = {
+            'uAfCE': function (_0x23527b, _0x1a5a9c) {
+                return _0x23527b(_0x1a5a9c);
+            }
+        };
+    fs[_0x5be82c(0x2ea) + 'e'](file), console[_0x5be82c(0x2bc)](chalk[_0x5be82c(0x272) + 'ht'](_0x5be82c(0x24f) + _0x5be82c(0x1f7) + __filename)), delete require[_0x5be82c(0x1f5)][file], _0x363d0e[_0x5be82c(0x22b)](require, file);
+});

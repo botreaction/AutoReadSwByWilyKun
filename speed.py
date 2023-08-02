@@ -1970,7 +1970,7 @@ end=('', '\n')[bool(debug)])
 ((results.upload / 1000.0 / 1000.0) / args.units[1],
  args.units[0]),
 quiet)
- printer("\n...................................................................................\n▶︎ POWERED BY *ZassTdr OFFICIAL*\n▶︎ Script By *ZassTdr OFFICIAL*")
+ printer("\n...................................................................................\n▶︎ POWERED BY *Hen OFFICIAL*\n▶︎ Script By *Hen OFFICIAL*")
 else:
  printer('Skipping upload test', quiet)
 
