@@ -1,5 +1,5 @@
 {
-  "name": "Hen",
+  "name": "kwowkowwkwok",
   "version": "1.0.0",
   "description": "Script By Hen",
   "main": "./connect.js",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node main.js"
   },
-  "author": "Hen",
+  "author": "kwowkowwkwok",
   "license": "ISC",
   "dependencies": {
     "@adiwajshing/keyed-db": "latest",
